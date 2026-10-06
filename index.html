@@ -166,6 +166,15 @@ html.lenis,html.lenis body{height:auto}
   .rack.is-flip .flash .ph{aspect-ratio:auto;height:min(46vh,430px)}
   .rack.is-flip .sheet h3{font-size:clamp(30px,min(4.4vw,8vh),70px)}
 }
+@media (min-width:760px) and (max-height:640px){
+  .rack.is-flip .rack__head{margin-bottom:8px}
+  .rack.is-flip .rack__head p{display:none}
+  .rack.is-flip .tabs{margin-bottom:10px}
+  .rack.is-flip .sheet{padding:16px 30px}
+  .rack.is-flip .sheet blockquote{font-size:17px;margin-bottom:10px}
+  .rack.is-flip .sheet__role{margin-bottom:10px;padding:5px 0}
+  .rack.is-flip .flash .ph{height:min(40vh,430px)}
+}
 @media (max-width:759px){
   body{font-size:18px}
   .kodra{justify-content:center;font-size:9.5px;letter-spacing:.08em}
@@ -420,10 +429,10 @@ html.lenis,html.lenis body{height:auto}
   /* porta-flash: cada folha gira na dobradiça e mostra a próxima */
   var rack=document.querySelector('.rack'),sheets=gsap.utils.toArray('.sheet'),tabs=document.querySelectorAll('#tabs button');
   var mm=gsap.matchMedia();
-  mm.add('(min-width:760px)',function(){
+  mm.add('(min-width:760px) and (min-height:540px)',function(){
     rack.classList.add('is-flip');
     sheets.forEach(function(s,i){gsap.set(s,{zIndex:sheets.length-i,rotateY:0,rotate:i?(i%2?1.1:-1.1):0})});
-    var tl=gsap.timeline({defaults:{ease:'power1.inOut'},scrollTrigger:{trigger:rack,start:'top top',end:'bottom bottom',scrub:.6,onUpdate:function(self){var k=Math.min(sheets.length-1,Math.floor(self.progress*(sheets.length-1)+.35));tabs.forEach(function(b,i){b.classList.toggle('on',i===k)})}}});
+    var tl=gsap.timeline({defaults:{ease:'power1.inOut'},scrollTrigger:{trigger:rack,start:'top top',end:'bottom bottom',scrub:.6,onUpdate:function(self){var k=Math.max(0,Math.min(sheets.length-1,Math.floor(self.progress*(sheets.length-.35)+.35)));tabs.forEach(function(b,i){b.classList.toggle('on',i===k)})}}});
     sheets.forEach(function(s,i){
       if(i<sheets.length-1){tl.to(s,{rotateY:-96,duration:1},i+.15).to(s,{boxShadow:'60px 30px 40px rgba(27,23,19,.35)',duration:.5},i+.15)}
       if(i>0){tl.to(s,{rotate:0,duration:.6},i-.6)}
@@ -433,7 +442,7 @@ html.lenis,html.lenis body{height:auto}
     var hs=[];tabs.forEach(function(b,i){var h=function(){jump(i)};b.addEventListener('click',h);hs.push([b,h])});
     return function(){rack.classList.remove('is-flip');gsap.set(sheets,{clearProps:'all'});hs.forEach(function(x){x[0].removeEventListener('click',x[1])})};
   });
-  mm.add('(max-width:759px)',function(){
+  mm.add('(max-width:759px), (max-height:539px)',function(){
     sheets.forEach(function(s,i){gsap.from(s,{y:60,opacity:0,rotate:i%2?3:-3,duration:.9,ease:'power3.out',scrollTrigger:{trigger:s,start:'top 88%',once:true}})});
   });
 
